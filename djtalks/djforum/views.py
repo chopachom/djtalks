@@ -11,15 +11,12 @@ from djtalks.djforum import forms
 
 
 def make_forum_tree(parent, forums):
-#    length = len(forums)
     children = {}
-    # take a copy of a list and iterate over
+    # take a copy of a list and iterate over it
     for forum in forums[:]:
         if not forum.parent_id or parent and forum.parent_id == parent.id:
             forums.remove(forum)
             children[forum] = {}
-#    if len(forums) == length:
-#        return forums
     for forum in children:
         children[forum] = make_forum_tree(forum, forums)
     return children
@@ -52,13 +49,16 @@ def index(request):
 
 @transaction.commit_on_success
 def forum(request, forum_id):
+
     user = request.user if \
         request.user.is_authenticated()\
     else \
         User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+
     forum = get_object_or_404(Forum, pk=forum_id)
     if not user.has_perm('view', forum):
         raise Http404
+
     form  = forms.AddTopicForm(request.POST or None)
     if form.is_valid_on_submit(request):
         topic = Topic(forum=forum, subject=form.cleaned_data['subject'],
@@ -68,12 +68,16 @@ def forum(request, forum_id):
                     message=form.cleaned_data['message'],
                     user_ip=request.META.get('REMOTE_ADDR', None))
         post.save()
-    topics = forum.topics.order_by('-updated').select_related('author', 'last_post', 'last_post__author')
+
+    topics = forum.topics.order_by('-updated')\
+                         .select_related('author','last_post','last_post__author')
     subforums = user.get_objects_any_perms(Forum, perms=['view'])\
                     .descendants(forum, depth=3)\
                     .select_related('last_post__topic', 'last_post__author')
+
     context = dict(forum=forum, topics=topics, form=form,
                    subforums=make_forum_tree(forum, list(subforums)))
+
     return render(request, 'djforum/forum.html', context)
 
 @transaction.commit_on_success
@@ -114,7 +118,7 @@ def new_pm(request):
           given user to the list of the recipients of the first message.
     """
     #TODO: make sure that user cannot include himself in recipients
-    #TODO: restrict depth to 0 when only two users are participation in conversation
+    #TODO: restrict depth to 0 when only two users are participating in the conversation
     form = forms.NewMessageForm(request.POST or None, user=request.user)
     if form.is_valid_on_submit(request):
         parent = form.cleaned_data['parent']

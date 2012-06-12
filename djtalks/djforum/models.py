@@ -27,8 +27,7 @@ class ForumManager(models.Manager):
             if depth: query.update(dict(depth__lte=depth+forum.depth))
             return self.filter(**query)
 
-    class DescendantsQuerySet(QuerySet, DescendantsMixin):
-        pass
+    class DescendantsQuerySet(QuerySet, DescendantsMixin): pass
 
     def get_query_set(self):
         return ForumManager.DescendantsQuerySet(self.model, using=self._db)
@@ -167,8 +166,10 @@ class Inbox(models.Model):
 
 signals.post_save.connect(
     Post.post_save, sender=Post, dispatch_uid='djforum_post_save')
+
 signals.post_save.connect(
     Topic.post_save, sender=Topic, dispatch_uid='djforum_topic_save')
+
 signals.post_save.connect(
     Forum.post_save, sender=Forum, dispatch_uid='djforum_forum_save')
 
