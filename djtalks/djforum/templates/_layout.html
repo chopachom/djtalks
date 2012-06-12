@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
+</head>
+<body>
+<nav class="container">
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}. Thanks for logging in. <a href="{% url django.contrib.auth.views.logout %}">Logout</a></p>
+    {% else %}
+        <p>Welcome, new user. Please log in.</p> <a href="{% url registration.views.register %}">register</a> <a href="{% url django.contrib.auth.views.login %}">Login</a>
+    {% endif %}
+</nav>
+{% block body %}
+    <section id="content" class="container">
+        {% block content %}
+
+        {% endblock %}
+    </section>
+{% endblock %}
+</body>
+</html>

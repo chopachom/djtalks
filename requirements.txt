@@ -1,0 +1,4 @@
+Django==1.4
+django-debug-toolbar==0.9.4
+django-object-permissions==1.4.3
+django-registration==0.8

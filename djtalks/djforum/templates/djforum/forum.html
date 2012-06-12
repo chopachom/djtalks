@@ -1,0 +1,53 @@
+{% extends "_layout.html" %}
+{% block content %}
+    <table class="table table-bordered">
+        {% for forum, subsubforums in subforums.items %}
+            <tr>
+                <td>
+                    <a href="{% url djtalks.djforum.views.forum forum.id %}">{{ forum.name }}</a>
+                    <div>
+                        <b>child boards:</b>
+                        {% for forum, subforums in subsubforums.items %}
+                            <a href="{% url djtalks.djforum.views.forum forum.id %}">{{ forum.name }}</a>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    {% if forum.last_post %}
+                        {{ forum.last_post.author.username }} in {{ forum.last_post.topic.subject }} at {{ forum.updated }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <td>{{ forum.name }}</td>
+            <td colspan="2">&nbsp;</td>
+            <td><a href="">new topic</a></td>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Topic starter</th>
+            <th>Posts</th>
+            <th>Last Post</th>
+        </tr>
+        </thead>
+        {% for topic in topics %}
+            <tr>
+                <td><a href="{% url djtalks.djforum.views.topic topic.id %}">{{ topic.subject }}</a></td>
+                <td>{{ topic.author.username }}</td>
+                <td>{{ topic.post_count }}</td>
+                <td>{{ topic.last_post.author }}{{ topic.updated }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

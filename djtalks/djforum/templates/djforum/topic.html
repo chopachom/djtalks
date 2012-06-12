@@ -1,0 +1,24 @@
+{% extends "_layout.html" %}
+{% load gravatar %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <td>Author</td>
+            <td>Message</td>
+        </tr>
+        </thead>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.author }}<br><img src="{{ post.author.email|gravatar_url }}" alt=""></td>
+                <td>{{ post.message }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

@@ -1,0 +1,31 @@
+{% extends "_layout.html" %}
+{% block content %}
+    <table class="table table-bordered">
+        {% for forum, subforums in forums.items %}
+            <thead>
+            <tr>
+                <th colspan="2">{{ forum.name }}</th>
+            </tr>
+            </thead>
+            {% for forum, subforums in subforums.items %}
+                <tr>
+                    <td>
+                        <a href="{% url djtalks.djforum.views.forum forum.id %}">{{ forum.name }}</a>
+                        <div>
+                            <b>child boards:</b>
+                            {% for forum, subforums in subforums.items %}
+                                <a href="{% url djtalks.djforum.views.forum forum.id %}">{{ forum.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td>
+                        {% if forum.last_post %}
+                            {{ forum.last_post.author.username }} in {{ forum.last_post.topic.subject }} at {{ forum.updated }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "_layout.html" %}
+{% block content %}
+    <div class="well"><a href="{% url djtalks.djforum.views.new_pm %}" class="btn">New Private Message</a></div>
+    <table class="table">
+        <caption> Incoming:</caption>
+        <thead>
+        <tr>
+            <td>Author</td>
+            <td>Subject</td>
+            <td>Message</td>
+            <td>Is read</td>
+        </tr>
+        </thead>
+        {% for message in incoming %}
+            <tr>
+                <td>{{ message.message.sender }}</td>
+                <td>{{ message.message.subject }}</td>
+                <td>{{ message.message.message }}</td>
+                <td>{{ message.is_read }}</td>
+                <td>{{ message.conversation_id }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+    <table class="table">
+    <caption>Outgoing:</caption>
+    <thead>
+    <tr>
+        <td>Author</td>
+        <td>Subject</td>
+        <td>Message</td>
+        <td>Is read</td>
+    </tr>
+    </thead>
+    {% for message in outgoing %}
+        <tr>
+            <td>{{ message.recipients.all }}</td>
+            <td>{{ message.subject }}</td>
+            <td>{{ message.message }}</td>
+            <td>{{ message.conversation_id }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+
